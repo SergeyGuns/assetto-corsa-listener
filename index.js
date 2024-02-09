@@ -31,7 +31,11 @@ client.on('RT_CAR_INFO', (
         wheelAngularSpeed2,
         wheelAngularSpeed3, 
         wheelAngularSpeed4,
-        speedKmh
+        speedKmh,
+        isAbsEnabled,
+        isAbsInAction,
+        isTcInAction,
+        isTcEnabled,
     }
 ) => { 
     function checkWheelsLocking(wheelAngularSpeeds, lockingThreshold) {
@@ -50,7 +54,12 @@ client.on('RT_CAR_INFO', (
         return results;
     }
 
-
+    if(isAbsEnabled && isAbsInAction) {
+      return port.write(Number(true)+'')
+    }
+    if(isAbsEnabled && !isAbsInAction) {
+      return port.write(Number(false)+'')
+    }
     const hasBlockedWheel = checkWheelsLocking([wheelAngularSpeed1, wheelAngularSpeed2, wheelAngularSpeed3, wheelAngularSpeed4], speedKmh / 10).includes(true)
     // if(!hasOpenArduinoPort) {console.log(hasBlockedWheel)}
     if(hasBlockedWheel === currBlockedState) return;
